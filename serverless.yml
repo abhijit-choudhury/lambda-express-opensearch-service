@@ -1,0 +1,29 @@
+service: lambda-express-opensearch-service
+frameworkVersion: '3'
+
+#Below allows to reference env variables from .env file in serverless.yml
+useDotenv: true
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  region: eu-west-1
+  iam:
+    role: ${env:LAMBDA_ROLE}
+  httpApi:
+    cors: true
+
+plugins:
+  - serverless-bundle
+  - serverless-offline
+
+functions:
+  api:
+    handler: "./src/handler.handler"
+    description: This application interacts with opensearch
+    memorySize: 512             # optional, in MB, default is 1024
+    timeout: 29                  # optional, in seconds, default is 6
+    provisionedConcurrency: 1   # optional, Count of provisioned lambda instances
+    reservedConcurrency: 50     # optional, reserved concurrency limit for this function. By default, AWS uses account concurrency limit
+    events:
+      - httpApi: "*"
